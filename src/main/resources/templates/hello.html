@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>hello</title>
+</head>
+<body>
+
+
+    <h1 th:text="${#strings.equals(user.name,'锋哥')}"></h1>
+    <h1 th:text="${#strings.indexOf(user.name,'a')}"></h1>
+    <h1 th:text="${#strings.substring(user.name,3,6)}"></h1>
+    <h1 th:text="${#strings.replace(user.name,'abc','yzx')}"></h1>
+    <!--  1、动态数据 2、小数点前保留的位数，3、小数点前超过3位，每三位的分割符 4、小数点后保留的位数 5、小数点格式  -->
+    <h1 th:text="${#numbers.formatDecimal(user.age,1,'COMMA','2','POINT')}"></h1>
+
+
+    <h1 th:text="${#dates.format(today,'yyyy-MM-dd')}"></h1>
+    <h1 th:text="${#numbers.formatDecimal(user.age,1,2)}"></h1>
+
+    <h1 th:object="${user}">
+        <p th:text="*{name.split('')[0]}"></p>
+        <p th:text="*{age}"></p>
+        <p th:text="*{friend.name}"></p>
+    </h1>
+
+    <a th:href="@{'http://api.gmall.com/pms/brand/{pageNum}(id=${id})'}"></a>
+    <a th:href="@{'http://api.gmall.com/pms/brand/(pageNum=${pageNum},pageSize=${pageSize})'}">起飞</a>
+    <h1>
+        <div th:switch="${user.age}">
+            <span th:case="21">小鲜肉</span>
+            <span th:case="22">鲜肉</span>
+            <span th:case="*">大鲜肉</span>
+        </div>
+    </h1>
+
+    <h1 th:text="${msg}">大家好</h1>
+    <h1>
+        <!--常规语法-->
+        欢迎你：<span th:text="${user.name}">请登录</span>
+    </h1>
+    <h1>
+        <!--   常量 -->
+        字符串常量：<span th:text="'欢迎您'"></span><br>
+        数字常量：<span th:text="2020"></span><br>
+        数字常量运算：<span th:text="2020-10"></span><br>
+        bool常量:<span th:text="true"></span>
+    </h1>
+
+    <h1>
+        <span th:text="'欢迎您，'+${user.name}"></span>
+        <span th:text="|欢迎您,${user.name}|"></span>
+
+    </h1>
+    <h1>
+        10年后，我<span th:text="${user.age} + 10">岁</span><br>
+        比较结果：<span th:text="${user.age}<${user.friend.age}"></span><br>
+        三元：<span th:text="${user.age}%2==0? '帅':'不帅' "></span><br>
+        默认值：<span th:text="${user.name}?:'硅谷刘德华'"></span><br>
+    </h1>
+
+    <h2 th:object="${user}">
+        <p th:text="*{name}">Jack</p>
+        <p th:text="*{age}">21</p>
+        <p th:text="*{friend.name}">Rose</p>
+    </h2>
+    <table>
+        <tr th:each="user:${users}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.age}"></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr th:each="user,stat:${users}">
+            <td th:text="${stat.index+1}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.age}"></td>
+        </tr>
+
+    </table>
+
+    <table>
+        <tr th:each="user,stat:${users}" th:if="${user.age>22}">
+            <td th:text="${stat.index+1}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.age}"></td>
+        </tr>
+    </table>
+
+    <!-- 定义一个通用的fragment -->
+    <footer th:fragment="copy">
+        <script type="text/javascript" th:src="@{/plugins/jquery/jquery-3.0.2.js}"></script>
+    </footer>
+
+    <!-- templatename::selector：”::”前面是模板文件名，后面是选择器
+        ::selector：只写选择器，这里指fragment名称，则加载本页面对应的fragment
+        templatename：只写模板文件名，则加载整个页面
+    -->
+    <div th:insert="::copy"></div>
+    <div th:replace="::copy"></div>
+    <div th:include="::copy"></div>
+
+</body>
+
+
+<script th:inline="javascript">
+    const user = [[${user}]];
+    const users = [[${users}]];
+    const age = [[${user.age}]];
+    console.log(user);
+    console.log(users);
+    console.log(age)
+</script>
+
+</html>
